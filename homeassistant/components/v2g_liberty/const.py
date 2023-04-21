@@ -1,3 +1,3 @@
 """Constants for the V2G Liberty integration."""
 
-DOMAIN = "liberty"
+DOMAIN = "v2g_liberty"
