@@ -2,6 +2,7 @@
   "config": {
     "step": {
       "user": {
+        "description": "Enter the IP adress and port number for your charger.",
         "data": {
           "host": "[%key:common::config_flow::data::host%]",
           "username": "[%key:common::config_flow::data::username%]",

@@ -1,0 +1,27 @@
+################################################################################
+#                                                                              #
+#    V2G Liberty Package                                                       #
+#    Contains all entities needed for the V2G Liberty software to work         #
+#                                                                              #
+################################################################################
+
+lovelace:
+  mode: storage
+  # These do not seem to work as expected, maybe resources cannot be added in a package...
+  # see https://github.com/RomRider/apexcharts-card#add-resource-reference
+  # So, currently these have to be added through the UI.
+  # This is why the mode is storage instead of the (expected?) yaml.
+  # resources:
+  #   - url: /hacsfiles/lovelace-card-mod/card-mod.js
+  #     type: module
+  #   - url: /hacsfiles/apexcharts-card/apexcharts-card.js
+  #     type: module
+
+  dashboards:
+    lovelace-yaml:
+      mode: yaml
+      filename: workspaces/V2G/homeassistant/components/liberty/v2g_liberty_dashboard.yaml
+      title: V2G Liberty
+      icon: mdi:car-electric
+      show_in_sidebar: true
+      require_admin: false

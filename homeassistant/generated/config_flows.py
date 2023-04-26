@@ -232,6 +232,7 @@ FLOWS = {
         "ld2410_ble",
         "led_ble",
         "lg_soundbar",
+        "liberty",
         "lidarr",
         "life360",
         "lifx",
