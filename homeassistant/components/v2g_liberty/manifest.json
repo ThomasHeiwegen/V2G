@@ -1,12 +1,12 @@
 {
-  "domain": "liberty",
+  "domain": "v2g_liberty",
   "name": "V2G Liberty",
   "codeowners": [
-    "@ThomasHeiwegen"
+    "@ArdJonker"
   ],
   "config_flow": true,
   "dependencies": [],
-  "documentation": "https://www.home-assistant.io/integrations/liberty",
+  "documentation": "https://www.home-assistant.io/integrations/v2g_liberty",
   "homekit": {},
   "iot_class": "local_polling",
   "requirements": ["awesomelights==1.2.3"],
