@@ -649,8 +649,8 @@ build.json @home-assistant/supervisor
 /homeassistant/components/led_ble/ @bdraco
 /tests/components/led_ble/ @bdraco
 /homeassistant/components/lg_netcast/ @Drafteed
-/homeassistant/components/liberty/ @ThomasHeiwegen
-/tests/components/liberty/ @ThomasHeiwegen
+/homeassistant/components/v2g_liberty/ @ThomasHeiwegen
+/tests/components/v2g_liberty/ @ThomasHeiwegen
 /homeassistant/components/lidarr/ @tkdrob
 /tests/components/lidarr/ @tkdrob
 /homeassistant/components/life360/ @pnbruckner

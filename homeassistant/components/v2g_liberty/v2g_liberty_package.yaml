@@ -20,7 +20,7 @@ lovelace:
   dashboards:
     lovelace-yaml:
       mode: yaml
-      filename: workspaces/V2G/homeassistant/components/liberty/v2g_liberty_dashboard.yaml
+      filename: workspaces/V2G/homeassistant/components/v2g_liberty/v2g_liberty_dashboard.yaml
       title: V2G Liberty
       icon: mdi:car-electric
       show_in_sidebar: true

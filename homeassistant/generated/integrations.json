@@ -2878,7 +2878,7 @@
         }
       }
     },
-    "liberty": {
+    "v2g_liberty": {
       "name": "V2G Liberty",
       "integration_type": "hub",
       "config_flow": true,

@@ -9,7 +9,7 @@
   "documentation": "https://www.home-assistant.io/integrations/v2g_liberty",
   "homekit": {},
   "iot_class": "local_polling",
-  "requirements": ["awesomelights==1.2.3"],
+  "requirements": [],
   "ssdp": [],
   "zeroconf": []
 }
