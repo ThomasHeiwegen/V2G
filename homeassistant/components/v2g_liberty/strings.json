@@ -8,17 +8,16 @@
         "description": "Welcome to V2G Liberty! \n \n With V2G Liberty you can earn money, support the electrical grid and reduce your ecological footprint. \n \n Currently, this integration can only be used with a specific combination of electric car and charger. We hope to add more models later. \n \n Make sure the following apply to your situation: \n **- You have a Quasar 1 charger, with working bidirectional charging using the Wallbox app.** \n **- Your charger is connected to the same network as this Home Assistant installation.**"
       },
       "setup": {
-        "description": "Enter the IP adress and port number for your charger.",
+        "description": "Enter the Host and Port number for your charger.",
         "data": {
-          "host": "[%key:common::config_flow::data::host%]",
-          "username": "[%key:common::config_flow::data::username%]",
-          "password": "[%key:common::config_flow::data::password%]"
+          "host": "Host address",
+          "port": "Port number"
         }
       }
     },
     "error": {
       "cannot_connect": "[%key:common::config_flow::error::cannot_connect%]",
-      "invalid_auth": "[%key:common::config_flow::error::invalid_auth%]",
+      "invalid_charger": "Invalid chager found",
       "unknown": "[%key:common::config_flow::error::unknown%]"
     },
     "abort": {

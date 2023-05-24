@@ -13,14 +13,17 @@ from homeassistant.exceptions import HomeAssistantError
 import homeassistant.helpers.config_validation as cv
 
 
-from .const import DOMAIN
+from .const import (
+    DOMAIN,
+    DEFAULT_PORT,
+)
 
 _LOGGER = logging.getLogger(__name__)
 
 STEP_SETUP_DATA_SCHEMA = vol.Schema(
     {
-        vol.Required("ip"): str,
-        vol.Required("port"): int,
+        vol.Required("host"): str,
+        vol.Required("port", default=DEFAULT_PORT): int,
     }
 )
 
@@ -53,7 +56,7 @@ async def validate_input(hass: HomeAssistant, data: dict[str, Any]) -> dict[str,
     #     your_validate_func, data["username"], data["password"]
     # )
 
-    hub = PlaceholderHub(data["ip"])
+    hub = PlaceholderHub(data["host"])
 
     if not await hub.authenticate(data["port"]):
         raise InvalidAuth
@@ -89,7 +92,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             except CannotConnect:
                 errors["base"] = "cannot_connect"
             except InvalidAuth:
-                errors["base"] = "invalid_auth"
+                errors["base"] = "invalid_charger"
             except Exception:  # pylint: disable=broad-except
                 _LOGGER.exception("Unexpected exception")
                 errors["base"] = "unknown"
@@ -106,4 +109,4 @@ class CannotConnect(HomeAssistantError):
 
 
 class InvalidAuth(HomeAssistantError):
-    """Error to indicate there is invalid auth."""
+    """Error to indicate there is invalid charger."""
