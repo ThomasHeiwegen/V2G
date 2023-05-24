@@ -13,10 +13,7 @@ from homeassistant.exceptions import HomeAssistantError
 import homeassistant.helpers.config_validation as cv
 
 
-from .const import (
-    DOMAIN,
-    DEFAULT_PORT,
-)
+from .const import DOMAIN, DEFAULT_PORT, DEFAULT_BATTERYLOW, DEFAULT_BATTERYHIGH
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -24,6 +21,17 @@ STEP_SETUP_DATA_SCHEMA = vol.Schema(
     {
         vol.Required("host"): str,
         vol.Required("port", default=DEFAULT_PORT): int,
+    }
+)
+
+STEP_BATTERYLOW_DATA_SCHEMA = vol.Schema(
+    {
+        vol.Required("battlow", default=DEFAULT_BATTERYLOW): int,
+    }
+)
+STEP_BATTERYHIGH_DATA_SCHEMA = vol.Schema(
+    {
+        vol.Required("battlow", default=DEFAULT_BATTERYHIGH): int,
     }
 )
 
@@ -101,6 +109,26 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
         return self.async_show_form(
             step_id="setup", data_schema=STEP_SETUP_DATA_SCHEMA, errors=errors
+        )
+
+    async def async_step_batterylow(
+        self, user_input: dict[str, Any] | None = None
+    ) -> FlowResult:
+        """Handle the setup step."""
+        errors: dict[str, str] = {}
+        if user_input is not None:
+            try:
+                info = await validate_input(self.hass, user_input)
+            except CannotConnect:
+                errors["base"] = "cannot_connect"
+            except Exception:  # pylint: disable=broad-except
+                _LOGGER.exception("Unexpected exception")
+                errors["base"] = "unknown"
+            else:
+                return self.async_create_entry(title=info["title"], data=user_input)
+
+        return self.async_show_form(
+            step_id="battlow", data_schema=STEP_BATTERYLOW_DATA_SCHEMA, errors=errors
         )
 
 
