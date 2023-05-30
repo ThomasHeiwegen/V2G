@@ -10,17 +10,20 @@ from homeassistant import config_entries
 from homeassistant.core import HomeAssistant
 from homeassistant.data_entry_flow import FlowResult
 from homeassistant.exceptions import HomeAssistantError
+import homeassistant.helpers.config_validation as cv
 
-from .const import DOMAIN
+
+from .const import (
+    DOMAIN,
+    DEFAULT_PORT,
+)
 
 _LOGGER = logging.getLogger(__name__)
 
-# TODO adjust the data schema to the data that you need
-STEP_USER_DATA_SCHEMA = vol.Schema(
+STEP_SETUP_DATA_SCHEMA = vol.Schema(
     {
         vol.Required("host"): str,
-        vol.Required("username"): str,
-        vol.Required("password"): str,
+        vol.Required("port", default=DEFAULT_PORT): int,
     }
 )
 
@@ -35,7 +38,7 @@ class PlaceholderHub:
         """Initialize."""
         self.host = host
 
-    async def authenticate(self, username: str, password: str) -> bool:
+    async def authenticate(self, port: int) -> bool:
         """Test if we can authenticate with the host."""
         return True
 
@@ -55,7 +58,7 @@ async def validate_input(hass: HomeAssistant, data: dict[str, Any]) -> dict[str,
 
     hub = PlaceholderHub(data["host"])
 
-    if not await hub.authenticate(data["username"], data["password"]):
+    if not await hub.authenticate(data["port"]):
         raise InvalidAuth
 
     # If you cannot connect:
@@ -64,7 +67,7 @@ async def validate_input(hass: HomeAssistant, data: dict[str, Any]) -> dict[str,
     # InvalidAuth
 
     # Return info that you want to store in the config entry.
-    return {"title": "Name of the device"}
+    return {"title": "Wallbox Charger"}
 
 
 class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
@@ -76,6 +79,12 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         self, user_input: dict[str, Any] | None = None
     ) -> FlowResult:
         """Handle the initial step."""
+        return self.async_show_menu(step_id="user", menu_options=["setup"])
+
+    async def async_step_setup(
+        self, user_input: dict[str, Any] | None = None
+    ) -> FlowResult:
+        """Handle the setup step."""
         errors: dict[str, str] = {}
         if user_input is not None:
             try:
@@ -83,7 +92,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             except CannotConnect:
                 errors["base"] = "cannot_connect"
             except InvalidAuth:
-                errors["base"] = "invalid_auth"
+                errors["base"] = "invalid_charger"
             except Exception:  # pylint: disable=broad-except
                 _LOGGER.exception("Unexpected exception")
                 errors["base"] = "unknown"
@@ -91,7 +100,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 return self.async_create_entry(title=info["title"], data=user_input)
 
         return self.async_show_form(
-            step_id="user", data_schema=STEP_USER_DATA_SCHEMA, errors=errors
+            step_id="setup", data_schema=STEP_SETUP_DATA_SCHEMA, errors=errors
         )
 
 
@@ -100,4 +109,4 @@ class CannotConnect(HomeAssistantError):
 
 
 class InvalidAuth(HomeAssistantError):
-    """Error to indicate there is invalid auth."""
+    """Error to indicate there is invalid charger."""
