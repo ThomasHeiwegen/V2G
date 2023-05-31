@@ -37,12 +37,9 @@
       },
       "battcap": {
         "title": "Usable capacity for car battery",
-        "description": "This is the the maximum energy storage capacity of the car's battery that can be used for driving/charging/discharging. This often is lower than the advertised capacity. \n Find a reliable value on ↗ [EV Database]({ev_database_url}). \n\n **Battery health** \n If a battery get's older it usually degrades and cannot contain as much energy as when it was new. It's advised to take this into account here. Do this by looking for the State of Health (SoH) in the cars the menu's. \n *E.g:* \n The SoH is 11/12 and the original usable capacity was 56kWh use a value of 51kWh.",
+        "description": "This is the the maximum energy storage capacity of the car's battery that can be used for driving/charging/discharging. This often is lower than the advertised capacity. \n Find a reliable value on ↗ [EV Database]({ev_database_url}). \n\n **Battery health** \n If a battery get's older it usually degrades and cannot contain as much energy as when it was new. It's advised to take this into account here. Do this by looking for the State of Health (SoH) in the car's menus. \n *E.G.:* \n The SoH is 11/12 and the original usable capacity was 56kWh use a value of 51kWh.",
         "data": {
           "battcap": "Usable capacity"
-        },
-        "data_description":{
-          "battcap": "Range between 60% and 100%. Some cars will never charge above 97% so this could be a relevant maximum as well."
         }
       }
     },
@@ -50,7 +47,7 @@
       "cannot_connect": "[%key:common::config_flow::error::cannot_connect%]",
       "invalid_charger": "Invalid chager found",
       "unknown": "[%key:common::config_flow::error::unknown%]",
-      "outofscope": "Your number is out of the given range."
+      "outofscope": "The given number is out of range. Enter a number between "
     },
     "abort": {
       "already_configured": "[%key:common::config_flow::abort::already_configured_device%]"

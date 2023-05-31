@@ -13,7 +13,7 @@ from homeassistant.exceptions import HomeAssistantError
 import homeassistant.helpers.config_validation as cv
 
 
-from .const import DOMAIN, DEFAULT_PORT, DEFAULT_BATTERYLOW, DEFAULT_BATTERYHIGH
+from .const import *
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -129,7 +129,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 vol.Range(min=10, max=30)(user_input["battlow"])
                 return await self.async_step_batthigh()
             except vol.Invalid:
-                errors = {"base": "outofscope"}
+                errors = {"base": "outofrange"}
 
         return self.async_show_form(
             step_id="battlow",
@@ -148,7 +148,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 vol.Range(min=60, max=100)(user_input["batthigh"])
                 return await self.async_step_battcap()
             except vol.Invalid:
-                errors = {"base": "outofscope"}
+                errors = {"base": "outofrange"}
 
         return self.async_show_form(
             step_id="batthigh",
@@ -160,14 +160,14 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     async def async_step_battcap(
         self, user_input: dict[str, Any] | None = None
     ) -> FlowResult:
-        """Handle the maximum battery % step."""
+        """Handle the battery capacity step."""
         errors: dict[str, str] = {}
         if user_input is not None:
             try:
                 vol.Range(min=10, max=150)(user_input["battcap"])
                 return await self.async_step_battcap()
             except vol.Invalid:
-                errors = {"base": "outofscope"}
+                errors = {"base": "outofrange"}
 
         return self.async_show_form(
             step_id="battcap",
