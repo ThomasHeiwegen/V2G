@@ -31,7 +31,7 @@ STEP_BATTERYLOW_DATA_SCHEMA = vol.Schema(
 )
 STEP_BATTERYHIGH_DATA_SCHEMA = vol.Schema(
     {
-        vol.Required("battlow", default=DEFAULT_BATTERYHIGH): int,
+        vol.Required("batthigh", default=DEFAULT_BATTERYHIGH): int,
     }
 )
 
@@ -105,30 +105,51 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 _LOGGER.exception("Unexpected exception")
                 errors["base"] = "unknown"
             else:
-                return self.async_create_entry(title=info["title"], data=user_input)
+                return await self.async_step_battlow()
 
         return self.async_show_form(
-            step_id="setup", data_schema=STEP_SETUP_DATA_SCHEMA, errors=errors
+            step_id="setup",
+            data_schema=STEP_SETUP_DATA_SCHEMA,
+            errors=errors,
+            last_step=False,
         )
 
-    async def async_step_batterylow(
+    async def async_step_battlow(
         self, user_input: dict[str, Any] | None = None
     ) -> FlowResult:
-        """Handle the setup step."""
+        """Handle the minimum battery % step."""
         errors: dict[str, str] = {}
         if user_input is not None:
             try:
-                info = await validate_input(self.hass, user_input)
-            except CannotConnect:
-                errors["base"] = "cannot_connect"
-            except Exception:  # pylint: disable=broad-except
-                _LOGGER.exception("Unexpected exception")
-                errors["base"] = "unknown"
-            else:
-                return self.async_create_entry(title=info["title"], data=user_input)
+                vol.Range(min=10, max=30)(user_input["battlow"])
+                return await self.async_step_batthigh()
+            except vol.Invalid:
+                errors = {"base": "outofscope"}
 
         return self.async_show_form(
-            step_id="battlow", data_schema=STEP_BATTERYLOW_DATA_SCHEMA, errors=errors
+            step_id="battlow",
+            data_schema=STEP_BATTERYLOW_DATA_SCHEMA,
+            errors=errors,
+            last_step=False,
+        )
+
+    async def async_step_batthigh(
+        self, user_input: dict[str, Any] | None = None
+    ) -> FlowResult:
+        """Handle the maximum battery % step."""
+        errors: dict[str, str] = {}
+        if user_input is not None:
+            try:
+                vol.Range(min=60, max=100)(user_input["batthigh"])
+                return await self.async_step_batthigh()
+            except vol.Invalid:
+                errors = {"base": "outofscope"}
+
+        return self.async_show_form(
+            step_id="batthigh",
+            data_schema=STEP_BATTERYHIGH_DATA_SCHEMA,
+            errors=errors,
+            last_step=False,
         )
 
 
