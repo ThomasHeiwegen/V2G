@@ -47,7 +47,7 @@
       "cannot_connect": "[%key:common::config_flow::error::cannot_connect%]",
       "invalid_charger": "Invalid chager found",
       "unknown": "[%key:common::config_flow::error::unknown%]",
-      "outofscope": "The given number is out of range. Enter a number between "
+      "outofrange": "The given number is out of range."
     },
     "abort": {
       "already_configured": "[%key:common::config_flow::abort::already_configured_device%]"
