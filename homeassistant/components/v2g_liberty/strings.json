@@ -2,23 +2,52 @@
   "config": {
     "step": {
       "user": {
+        "title": "Charger",
         "menu_options": {
           "setup": "I have read the above text and wish to continue."
         },
-        "description": "Welcome to V2G Liberty! \n \n With V2G Liberty you can earn money, support the electrical grid and reduce your ecological footprint. \n \n Currently, this integration can only be used with a specific combination of electric car and charger. We hope to add more models later. \n \n Make sure the following apply to your situation: \n **- You have a Quasar 1 charger, with working bidirectional charging using the Wallbox app.** \n **- Your charger is connected to the same network as this Home Assistant installation.**"
+        "description": "Welcome to V2G Liberty! \n\n With V2G Liberty you can earn money, support the electrical grid and reduce your ecological footprint. \n\n Currently, this integration can only be used with a specific combination of electric car and charger. We hope to add more models later. \n\n Make sure the following apply to your situation: \n **- You have a Quasar 1 charger, with working bidirectional charging using the Wallbox app.** \n **- Your charger is connected to the same network as this Home Assistant installation.**"
       },
       "setup": {
-        "description": "Enter the Host and Port number for your charger.",
+        "description": "Enter the Host and Port number for your charger. This can be found in the Wallbox app: \n Settings > Connectivity > Ethernet",
         "data": {
           "host": "Host address",
           "port": "Port number"
+        }
+      },
+      "battlow": {
+        "title": "Lower charge limit for car battery",
+        "description": "**Effects on automated charging** \n The automated schedule will never discharge below this value. \n If the car returns with and SoC below this value, the battery will directly be charged to this limit, before automated (scheduled) charging. \n\n **Effects on earnings** \n A high value results in always having a greater driving range available, even when not planned, but less capacity available for discharge and so lesser earnings. \n A lower value results in sometimes a smaller driving range available for un-planned drives but there is always more capacity for discharge and so more earnings. \n\n **Battery life** \n Some research suggests battery life is shorter if the SoC is below 15% for a longer period. \n\n **Odd car behaviour** \n In some cars the SoC every now and then skips a number, eg. from 21 to 19%, skipping 20%. This might result in toggling charging behaviour around this minimum SoC. If this happens try a value one higher or lower.",
+        "data": {
+          "battlow": "Minimum State of Charge %"
+        },
+        "data_description": {
+          "battlow": "Range between 10% and 30%."
+        }
+      },
+      "batthigh": {
+        "title": "Upper charge limit for car battery",
+        "description": "**Effects on earnings** \n The schedule will use this limit for regular automated/scheduled charging. \n A low setting reduces schedule flexibility and so the capability to earn money and reduce emissions. \n\n When a calendar item is present, the schedule will ignore this limit and try to charge the battery to 100% or the provided battery target at the start of the calendar item. \n\n **Battery life** \n Some research suggests battery life is shorter if the SoC is above 85% for a longer period (days). \n\n **Odd car behaviour** \n In some cars the SoC drops 1% in short time when idle above a certain SoC (e.g. 95%). This results in a toggling charge behaviour, try setting this limit to a lower value.",
+        "data": {
+          "batthigh": "Maximum State of Charge %"
+        },
+        "data_description":{
+          "batthigh": "Range between 60% and 100%. Some cars will never charge above 97% so this could be a relevant maximum as well."
+        }
+      },
+      "battcap": {
+        "title": "Usable capacity for car battery",
+        "description": "This is the the maximum energy storage capacity of the car's battery that can be used for driving/charging/discharging. This often is lower than the advertised capacity. \n Find a reliable value on ↗ [EV Database]({ev_database_url}). \n\n **Battery health** \n If a battery get's older it usually degrades and cannot contain as much energy as when it was new. It's advised to take this into account here. Do this by looking for the State of Health (SoH) in the car's menus. \n *E.G.:* \n The SoH is 11/12 and the original usable capacity was 56kWh use a value of 51kWh.",
+        "data": {
+          "battcap": "Usable capacity"
         }
       }
     },
     "error": {
       "cannot_connect": "[%key:common::config_flow::error::cannot_connect%]",
       "invalid_charger": "Invalid chager found",
-      "unknown": "[%key:common::config_flow::error::unknown%]"
+      "unknown": "[%key:common::config_flow::error::unknown%]",
+      "outofrange": "The given number is out of range."
     },
     "abort": {
       "already_configured": "[%key:common::config_flow::abort::already_configured_device%]"
