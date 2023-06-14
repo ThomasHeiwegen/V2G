@@ -47,7 +47,8 @@
       "cannot_connect": "[%key:common::config_flow::error::cannot_connect%]",
       "invalid_charger": "Invalid chager found",
       "unknown": "[%key:common::config_flow::error::unknown%]",
-      "outofrange": "The given number is out of range."
+      "outofrange": "The given number is out of range.",
+      "notconnected": "Not connected to the Modbus server."
     },
     "abort": {
       "already_configured": "[%key:common::config_flow::abort::already_configured_device%]"

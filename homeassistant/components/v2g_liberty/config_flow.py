@@ -5,22 +5,29 @@ import logging
 from typing import Any
 
 import voluptuous as vol
+from pyModbusTCP.client import ModbusClient
 
 from homeassistant import config_entries
 from homeassistant.core import HomeAssistant
 from homeassistant.data_entry_flow import FlowResult
 from homeassistant.exceptions import HomeAssistantError
-import homeassistant.helpers.config_validation as cv
 
 
-from .const import *
+from .const import (
+    DOMAIN,
+    DEFAULT_PORT,
+    DEFAULT_BATTERYLOW,
+    DEFAULT_BATTERYHIGH,
+    CONF_MODBUS_HOST,
+    CONF_MODBUS_PORT,
+)
 
 _LOGGER = logging.getLogger(__name__)
 
 STEP_SETUP_DATA_SCHEMA = vol.Schema(
     {
-        vol.Required("host"): str,
-        vol.Required("port", default=DEFAULT_PORT): int,
+        vol.Required(CONF_MODBUS_HOST): str,
+        vol.Required(CONF_MODBUS_PORT, default=DEFAULT_PORT): int,
     }
 )
 
@@ -39,6 +46,16 @@ STEP_BATTERYCAP_DATA_SCHEMA = vol.Schema(
         vol.Required("battcap"): int,
     }
 )
+
+
+class FieldError(Exception):
+    """Field with invalid data."""
+
+    def __init__(self, message: str, field: str, error: str) -> None:
+        """Set up error."""
+        super().__init__(message)
+        self.field = field
+        self.error = error
 
 
 class PlaceholderHub:
@@ -83,6 +100,30 @@ async def validate_input(hass: HomeAssistant, data: dict[str, Any]) -> dict[str,
     return {"title": "Wallbox Charger"}
 
 
+async def validate_modbus_connection(
+    hass: HomeAssistant, data: dict[str, Any]
+) -> tuple[str, dict[str, Any]]:
+    """Validate the user input allows us to connect."""
+    try:
+        connection = ModbusClient(
+            host=str(data[CONF_MODBUS_HOST]),
+            port=int(data[CONF_MODBUS_PORT]),
+            auto_open=True,
+        )
+    except vol.Error:
+        errors = {"base": "cannot_connect"}
+
+    connection.open()
+
+    try:
+        if not connection.is_open:
+            raise ConnectionError()
+    except ConnectionError as exc:
+        raise FieldError("Timeout on read", "base", "notconnected") from exc
+    finally:
+        connection.close()
+
+
 class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     """Handle a config flow for V2G Liberty."""
 
@@ -101,7 +142,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         errors: dict[str, str] = {}
         if user_input is not None:
             try:
-                info = await validate_input(self.hass, user_input)
+                await validate_modbus_connection(self.hass, user_input)
             except CannotConnect:
                 errors["base"] = "cannot_connect"
             except InvalidAuth:
@@ -164,8 +205,9 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         errors: dict[str, str] = {}
         if user_input is not None:
             try:
+                info = await validate_input(self.hass, user_input)
                 vol.Range(min=10, max=150)(user_input["battcap"])
-                return await self.async_step_battcap()
+                return self.async_create_entry(title=info["title"], data={})
             except vol.Invalid:
                 errors = {"base": "outofrange"}
 
