@@ -1,4 +1,11 @@
-Home Assistant |Chat Status|
+# DEPRECATED
+This repository is no longer supported.  It has been replaced by [HA add-on V2G Liberty](https://github.com/V2G-liberty/addon-v2g-liberty).
+
+
+
+
+
+Home Assistant
 =================================================================================
 
 Open source home automation that puts local control and privacy first. Powered by a worldwide community of tinkerers and DIY enthusiasts. Perfect to run on a Raspberry Pi or a local server.
